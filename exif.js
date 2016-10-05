@@ -379,7 +379,7 @@
                 http.responseType = "arraybuffer";
                 http.send(null);
             }
-        } else if (window.FileReader && (img instanceof window.Blob || img instanceof window.File)) {
+        } else if (self.FileReader && (img instanceof self.Blob || img instanceof self.File)) {
             var fileReader = new FileReader();
             fileReader.onload = function(e) {
                 if (debug) console.log("Got file of length " + e.target.result.byteLength);
@@ -642,6 +642,7 @@
 
     function getStringFromDB(buffer, start, length) {
         var outstr = "";
+        var n;
         for (n = start; n < start+length; n++) {
             outstr += String.fromCharCode(buffer.getUint8(n));
         }
@@ -741,7 +742,10 @@
     }
 
     EXIF.getData = function(img, callback) {
-        if ((img instanceof Image || img instanceof HTMLImageElement) && !img.complete) return false;
+        if (self.Image && self.HTMLImageElement && 
+            (img instanceof Image || img instanceof HTMLImageElement) && !img.complete) {
+            return false;
+        }
 
         if (!imageHasData(img)) {
             getImageData(img, callback);
